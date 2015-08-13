@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+set -ex
+
+export RLWRAP_EDITOR="vi \"+setf clojure\" \"+set binary\" \"+set noeol\" +%L"
+rlwrap_breakchars="(){}[],^%$#@\"\";:''|\\"
+rlwrap_completions_file=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/completions
+rlwrap_options="--remember -c -m -pgreen -aignored -n \
+	-b $rlwrap_breakchars -f $rlwrap_completions_file"
 
 base_path=$0
 if [ -L "$base_path" ]; then
@@ -33,7 +40,7 @@ case $1 in
     ""|"repl")
         rlwrap_cmd=""
         if [ -n "`which rlwrap`" ]; then
-            rlwrap_cmd="rlwrap -aignored -n"
+            rlwrap_cmd="rlwrap $rlwrap_options"
         fi
         $rlwrap_cmd $pixie_path $load_path
         ;;
